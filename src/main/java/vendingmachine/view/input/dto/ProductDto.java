@@ -3,9 +3,10 @@ package vendingmachine.view.input.dto;
 import java.util.List;
 import vendingmachine.ErrorMessage;
 import vendingmachine.util.Parser;
+import vendingmachine.util.Validator;
 
 public class ProductDto {
-    public static final String NOT_PROPER_FORMAT = "올바르지 않은 포맷입니다.";
+    private static final String NOT_PROPER_PRODUCT = ErrorMessage.getMessage("올바르지 않은 입력입니다.");
     private final String name;
     private final int price;
     private final int count;
@@ -20,6 +21,7 @@ public class ProductDto {
         validateProductFormat(product);
         product = product.substring(1, product.length() - 2);
         List<String> parsed = Parser.parseWithDelimiter(product, ",");
+
         String name = parsed.get(0);
         String price = parsed.get(1);
         String count = parsed.get(2);
@@ -27,48 +29,30 @@ public class ProductDto {
     }
 
     private static void validateProductFormat(String product) {
-        checkLength(product, 2);
+        Validator.checkStringLength(product, 2, NOT_PROPER_PRODUCT);
         checkBracket(product);
 
         product = product.substring(1, product.length() - 1);
-        System.out.println(product);
-
         List<String> parsed = Parser.parseWithDelimiter(product, ",");
-        checkSize(parsed, 3);
+
+        Validator.checkListLength(parsed, 3, NOT_PROPER_PRODUCT);
+        Validator.checkBlank(parsed.get(0), NOT_PROPER_PRODUCT);
+        Validator.checkBlank(parsed.get(0), NOT_PROPER_PRODUCT);
+        Validator.checkBlank(parsed.get(0), NOT_PROPER_PRODUCT);
         parsed.forEach(ProductDto::checkBlank);
-        checkInteger(parsed.get(1));
-        checkInteger(parsed.get(2));
-    }
-
-    private static void checkLength(String product, int length) {
-        if (product.length() <= 2) {
-            throw new IllegalArgumentException(ErrorMessage.getMessage(NOT_PROPER_FORMAT));
-        }
-    }
-
-    private static void checkInteger(String s) {
-        try {
-            Integer.parseInt(s);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(ErrorMessage.getMessage(NOT_PROPER_FORMAT));
-        }
+        Validator.checkIsInteger(parsed.get(1), NOT_PROPER_PRODUCT);
+        Validator.checkIsInteger(parsed.get(2), NOT_PROPER_PRODUCT);
     }
 
     private static void checkBracket(String s) {
         if (s.indexOf('[') != 0 || s.indexOf(']') != s.length() - 1) {
-            throw new IllegalArgumentException(ErrorMessage.getMessage(NOT_PROPER_FORMAT));
+            throw new IllegalArgumentException(NOT_PROPER_PRODUCT);
         }
     }
 
     private static void checkBlank(String s) {
         if (s.isBlank()) {
-            throw new IllegalArgumentException(ErrorMessage.getMessage(NOT_PROPER_FORMAT));
-        }
-    }
-
-    private static void checkSize(List<String> parsed, int size) {
-        if (parsed.size() != size) {
-            throw new IllegalArgumentException(ErrorMessage.getMessage(NOT_PROPER_FORMAT));
+            throw new IllegalArgumentException(ErrorMessage.getMessage(NOT_PROPER_PRODUCT));
         }
     }
 

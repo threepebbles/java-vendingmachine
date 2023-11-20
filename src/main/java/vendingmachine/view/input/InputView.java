@@ -34,6 +34,14 @@ public class InputView {
         });
     }
 
+//    public PurchaseProductDto requestPurchaseProductDto() {
+//        return (PurchaseProductDto) retryUntilSuccess(() -> {
+//            System.out.print("구매할 상품명을 입력해 주세요." + LINE_SEPARATOR);
+//            String purchaseProduct = Console.readLine();
+//            return PurchaseProductDto.createPurchaseProductDto(purchaseProduct);
+//        });
+//    }
+
     private <T> Object retryUntilSuccess(Supplier<T> function) {
         while (true) {
             try {

@@ -1,9 +1,10 @@
 package vendingmachine.view.input.dto;
 
 import vendingmachine.ErrorMessage;
+import vendingmachine.util.Validator;
 
 public class PurchaseAmountDto {
-    public static final String NOT_PROPER_PURCHASE_AMOUNT = "올바르지 않은 투입 금액입니다.";
+    private static final String NOT_PROPER_PURCHASE_AMOUNT = ErrorMessage.getMessage("올바르지 않은 투입 금액입니다.");
     private final int amount;
 
     public PurchaseAmountDto(int amount) {
@@ -11,25 +12,11 @@ public class PurchaseAmountDto {
     }
 
     public static PurchaseAmountDto createPurchaseAmountDto(String purchaseAmount) {
-        checkInteger(purchaseAmount);
+        Validator.checkIsInteger(purchaseAmount, NOT_PROPER_PURCHASE_AMOUNT);
 
         int amount = Integer.parseInt(purchaseAmount);
-        checkPositiveInteger(amount);
+        Validator.checkIsPositiveInteger(amount, NOT_PROPER_PURCHASE_AMOUNT);
         return new PurchaseAmountDto(amount);
-    }
-
-    private static void checkPositiveInteger(int amount) {
-        if (amount <= 0) {
-            throw new IllegalArgumentException(ErrorMessage.getMessage(NOT_PROPER_PURCHASE_AMOUNT));
-        }
-    }
-
-    private static void checkInteger(String amount) {
-        try {
-            Integer.parseInt(amount);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(ErrorMessage.getMessage(NOT_PROPER_PURCHASE_AMOUNT));
-        }
     }
 
     public int getAmount() {
