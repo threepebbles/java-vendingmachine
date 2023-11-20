@@ -11,10 +11,10 @@ public class PurchaseAmountDto {
         this.amount = amount;
     }
 
-    public static PurchaseAmountDto createPurchaseAmountDto(String purchaseAmount) {
-        Validator.checkIsInteger(purchaseAmount, NOT_PROPER_PURCHASE_AMOUNT);
+    public static PurchaseAmountDto createPurchaseAmountDto(String userInput) {
+        Validator.checkIsInteger(userInput, NOT_PROPER_PURCHASE_AMOUNT);
 
-        int amount = Integer.parseInt(purchaseAmount);
+        int amount = Integer.parseInt(userInput);
         Validator.checkIsPositiveInteger(amount, NOT_PROPER_PURCHASE_AMOUNT);
         return new PurchaseAmountDto(amount);
     }

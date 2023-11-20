@@ -17,10 +17,10 @@ public class ProductDto {
         this.count = count;
     }
 
-    public static ProductDto createProductDto(String product) {
-        validateProductFormat(product);
-        product = product.substring(1, product.length() - 2);
-        List<String> parsed = Parser.parseWithDelimiter(product, ",");
+    public static ProductDto createProductDto(String userInput) {
+        validateProductFormat(userInput);
+        userInput = userInput.substring(1, userInput.length() - 2);
+        List<String> parsed = Parser.parseWithDelimiter(userInput, ",");
 
         String name = parsed.get(0);
         String price = parsed.get(1);
@@ -29,7 +29,7 @@ public class ProductDto {
     }
 
     private static void validateProductFormat(String product) {
-        Validator.checkStringLength(product, 2, NOT_PROPER_PRODUCT);
+        Validator.checkBlank(product, NOT_PROPER_PRODUCT);
         checkBracket(product);
 
         product = product.substring(1, product.length() - 1);
@@ -37,8 +37,8 @@ public class ProductDto {
 
         Validator.checkListLength(parsed, 3, NOT_PROPER_PRODUCT);
         Validator.checkBlank(parsed.get(0), NOT_PROPER_PRODUCT);
-        Validator.checkBlank(parsed.get(0), NOT_PROPER_PRODUCT);
-        Validator.checkBlank(parsed.get(0), NOT_PROPER_PRODUCT);
+        Validator.checkBlank(parsed.get(1), NOT_PROPER_PRODUCT);
+        Validator.checkBlank(parsed.get(2), NOT_PROPER_PRODUCT);
         parsed.forEach(ProductDto::checkBlank);
         Validator.checkIsInteger(parsed.get(1), NOT_PROPER_PRODUCT);
         Validator.checkIsInteger(parsed.get(2), NOT_PROPER_PRODUCT);
