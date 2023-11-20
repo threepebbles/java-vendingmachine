@@ -5,6 +5,7 @@ import camp.nextstep.edu.missionutils.Console;
 import java.util.function.Supplier;
 import vendingmachine.view.input.dto.InitialAmountDto;
 import vendingmachine.view.input.dto.ProductsDto;
+import vendingmachine.view.input.dto.PurchaseAmountDto;
 
 public class InputView {
     public static final String LINE_SEPARATOR = System.lineSeparator();
@@ -22,6 +23,14 @@ public class InputView {
             System.out.print("상품명과 가격, 수량을 입력해 주세요." + LINE_SEPARATOR);
             String products = Console.readLine();
             return ProductsDto.createProductsDto(products);
+        });
+    }
+
+    public PurchaseAmountDto requestPurchaseAmountDto() {
+        return (PurchaseAmountDto) retryUntilSuccess(() -> {
+            System.out.print("투입 금액을 입력해 주세요." + LINE_SEPARATOR);
+            String purchaseAmount = Console.readLine();
+            return PurchaseAmountDto.createPurchaseAmountDto(purchaseAmount);
         });
     }
 
