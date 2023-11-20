@@ -2,6 +2,7 @@ package vendingmachine.controller;
 
 import vendingmachine.view.input.InputView;
 import vendingmachine.view.input.dto.InitialAmountDto;
+import vendingmachine.view.input.dto.ProductsDto;
 
 public class MainController {
     private final InputView inputView;
@@ -13,6 +14,8 @@ public class MainController {
     public void run() {
         InitialAmountDto initialAmountDto = inputView.requestInitialAmount();
         System.out.println(initialAmountDto.getAmount());
-    }
 
+        ProductsDto productsDto = inputView.requestProductsDto();
+        
+    }
 }
