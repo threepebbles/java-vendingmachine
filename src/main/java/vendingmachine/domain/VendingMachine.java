@@ -2,16 +2,16 @@ package vendingmachine.domain;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import vendingmachine.Coin;
+import vendingmachine.ErrorMessage;
 
 public class VendingMachine {
     private final Map<Coin, Integer> coinCount;
-    private final List<Product> products;
+    private final Products products;
     private int remainingMoney;
 
-    public VendingMachine(List<Product> products) {
+    public VendingMachine(Products products) {
         this.coinCount = new HashMap<>() {{
             Arrays.stream(Coin.values()).forEach(coin -> put(coin, 0));
         }};
@@ -26,44 +26,55 @@ public class VendingMachine {
 
     public void subtractCoins(Coin coin, int count) {
         if (coinCount.get(coin) == null || coinCount.get(coin) < count) {
-            throw new IllegalArgumentException("코인이 부족합니다.");
+            throw new IllegalArgumentException(ErrorMessage.getMessage("코인이 부족합니다."));
         }
         coinCount.put(coin, coinCount.get(coin) - count);
     }
 
-    public Product findProductByName(String productName) {
-        for (Product product : products) {
-            if (product.getName().equals(productName)) {
-                return product;
-            }
-        }
-        return null;
-    }
-
     public void addProducts(String productName, int count) {
-        Product product = findProductByName(productName);
+        Product product = products.findProductByName(productName);
         if (product == null) {
-            throw new IllegalArgumentException("존재하지 않는 상품입니다.");
+            throw new IllegalArgumentException(ErrorMessage.getMessage("존재하지 않는 상품입니다."));
         }
         product.addProduct(count);
     }
 
-    public void subtractProducts(String productName, int count) {
-        Product product = findProductByName(productName);
+    public void sellProducts(String productName, int count) {
+        Product product = products.findProductByName(productName);
         if (product == null) {
-            throw new IllegalArgumentException("존재하지 않는 상품입니다.");
+            throw new IllegalArgumentException(ErrorMessage.getMessage("존재하지 않는 상품입니다."));
         }
-        product.addProduct(count);
+        product.subtractProduct(count);
+        reduceMoney(product.getPrice() * count);
     }
 
-    public void insertRemainingMoney(int money) {
+    public void insertMoney(int money) {
+        if (money < 0 || money % 10 != 0) {
+            throw new IllegalArgumentException(ErrorMessage.getMessage("투입 금액이 올바르지 않습니다."));
+        }
         remainingMoney += money;
     }
 
-    public void reduceRemainingMoney(int money) {
+    public void reduceMoney(int money) {
         if (remainingMoney < money) {
-            throw new IllegalArgumentException("출금할 수 있는 금액보다 많은 금액입니다.");
+            throw new IllegalArgumentException(ErrorMessage.getMessage("출금할 수 있는 금액보다 많은 금액입니다."));
         }
         remainingMoney -= money;
+    }
+
+    public boolean hasEnoughRemainingMoney() {
+        return remainingMoney >= products.getLowestPrice();
+    }
+
+    public int getCountOfCoin(Coin coin) {
+        return coinCount.get(coin);
+    }
+
+    public Map<Coin, Integer> getCoinCount() {
+        return coinCount;
+    }
+
+    public int getRemainingMoney() {
+        return remainingMoney;
     }
 }

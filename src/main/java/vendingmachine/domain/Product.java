@@ -2,6 +2,7 @@ package vendingmachine.domain;
 
 import vendingmachine.ErrorMessage;
 import vendingmachine.util.Validator;
+import vendingmachine.view.input.dto.ProductDto;
 
 public class Product {
     private String name;
@@ -15,6 +16,10 @@ public class Product {
         this.name = name;
         this.price = price;
         this.count = count;
+    }
+
+    public static Product createProduct(ProductDto productDto) {
+        return new Product(productDto.getName(), productDto.getPrice(), productDto.getCount());
     }
 
     private void validateCount(int count) {

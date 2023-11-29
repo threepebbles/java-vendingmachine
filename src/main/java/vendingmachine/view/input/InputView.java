@@ -11,8 +11,8 @@ import vendingmachine.view.input.dto.PurchaseProductDto;
 public class InputView {
     public static final String LINE_SEPARATOR = System.lineSeparator();
 
-    public InitialAmountDto requestInitialAmount() {
-        return (InitialAmountDto) retryUntilSuccess(() -> {
+    public InitialAmountDto requestInitialAmountDto() {
+        return (InitialAmountDto) retryUntilSuccessWithReturn(() -> {
             System.out.print("자판기가 보유하고 있는 금액을 입력해 주세요." + LINE_SEPARATOR);
             String initialAmount = Console.readLine();
             return InitialAmountDto.createInitialAmountDto(initialAmount);
@@ -20,7 +20,7 @@ public class InputView {
     }
 
     public ProductsDto requestProductsDto() {
-        return (ProductsDto) retryUntilSuccess(() -> {
+        return (ProductsDto) retryUntilSuccessWithReturn(() -> {
             System.out.print("상품명과 가격, 수량을 입력해 주세요." + LINE_SEPARATOR);
             String products = Console.readLine();
             return ProductsDto.createProductsDto(products);
@@ -28,7 +28,7 @@ public class InputView {
     }
 
     public PurchaseAmountDto requestPurchaseAmountDto() {
-        return (PurchaseAmountDto) retryUntilSuccess(() -> {
+        return (PurchaseAmountDto) retryUntilSuccessWithReturn(() -> {
             System.out.print("투입 금액을 입력해 주세요." + LINE_SEPARATOR);
             String purchaseAmount = Console.readLine();
             return PurchaseAmountDto.createPurchaseAmountDto(purchaseAmount);
@@ -36,14 +36,18 @@ public class InputView {
     }
 
     public PurchaseProductDto requestPurchaseProductDto() {
-        return (PurchaseProductDto) retryUntilSuccess(() -> {
+        return (PurchaseProductDto) retryUntilSuccessWithReturn(() -> {
             System.out.print("구매할 상품명을 입력해 주세요." + LINE_SEPARATOR);
             String purchaseProduct = Console.readLine();
             return PurchaseProductDto.createPurchaseProductDto(purchaseProduct);
         });
     }
 
-    private <T> Object retryUntilSuccess(Supplier<T> function) {
+    public void printlnMessage(String message) {
+        System.out.println(message);
+    }
+
+    private <T> Object retryUntilSuccessWithReturn(Supplier<T> function) {
         while (true) {
             try {
                 return function.get();

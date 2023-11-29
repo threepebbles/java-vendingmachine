@@ -4,7 +4,6 @@ import vendingmachine.ErrorMessage;
 import vendingmachine.util.Validator;
 
 public class InitialAmountDto {
-    private static final String NOT_PROPER_INITIAL_AMOUNT = ErrorMessage.getMessage("입력한 금액이 정수가 아닙니다.");
     private final int amount;
 
     public InitialAmountDto(int amount) {
@@ -12,9 +11,9 @@ public class InitialAmountDto {
     }
 
     public static InitialAmountDto createInitialAmountDto(String userInput) {
-        Validator.checkIsInteger(userInput, NOT_PROPER_INITIAL_AMOUNT);
+        Validator.checkIsInteger(userInput, ErrorMessage.getMessage("입력한 금액이 정수가 아닙니다."));
         int initialAmount = Integer.parseInt(userInput);
-        Validator.checkIsPositiveInteger(initialAmount, NOT_PROPER_INITIAL_AMOUNT);
+        Validator.checkIsPositiveInteger(initialAmount, ErrorMessage.getMessage("입력한 금액이 양수가 아닙니다."));
         return new InitialAmountDto(initialAmount);
     }
 
