@@ -22,7 +22,7 @@ public class VendingMachineManagerService {
 
     public InitialCoinsDto createInitialCoins(CoinGenerator coinGenerator, int amount) {
         checkDividedByMinimumCoinUnit(amount);
-        Map<Coin, Integer> coinCount = initCoinCount();
+        Map<Coin, Integer> coinCount = getInitialCoinCount();
         while (amount > 0) {
             Coin coin = coinGenerator.generateCoin();
             if (amount >= coin.getAmount()) {
@@ -40,7 +40,7 @@ public class VendingMachineManagerService {
         }
     }
 
-    private Map<Coin, Integer> initCoinCount() {
+    private Map<Coin, Integer> getInitialCoinCount() {
         return new HashMap<>() {{
             Arrays.stream(Coin.values()).forEach(coin -> put(coin, 0));
         }};
