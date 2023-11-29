@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import vendingmachine.Coin;
-import vendingmachine.ErrorMessage;
+import vendingmachine.error.ErrorMessage;
 
 public class VendingMachine {
     private final Map<Coin, Integer> coinCount;
@@ -31,19 +31,8 @@ public class VendingMachine {
         coinCount.put(coin, coinCount.get(coin) - count);
     }
 
-    public void addProducts(String productName, int count) {
-        Product product = products.findProductByName(productName);
-        if (product == null) {
-            throw new IllegalArgumentException(ErrorMessage.getMessage("존재하지 않는 상품입니다."));
-        }
-        product.addProduct(count);
-    }
-
     public void sellProducts(String productName, int count) {
         Product product = products.findProductByName(productName);
-        if (product == null) {
-            throw new IllegalArgumentException(ErrorMessage.getMessage("존재하지 않는 상품입니다."));
-        }
         product.subtractProduct(count);
         reduceMoney(product.getPrice() * count);
     }
@@ -68,10 +57,6 @@ public class VendingMachine {
 
     public int getCountOfCoin(Coin coin) {
         return coinCount.get(coin);
-    }
-
-    public Map<Coin, Integer> getCoinCount() {
-        return coinCount;
     }
 
     public int getRemainingMoney() {

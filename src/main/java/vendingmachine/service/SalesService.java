@@ -6,8 +6,21 @@ import java.util.Map;
 import vendingmachine.Coin;
 import vendingmachine.domain.VendingMachine;
 import vendingmachine.view.output.dto.ChangeDto;
+import vendingmachine.view.output.dto.RemainingMoneyDto;
 
-public class ChangeService {
+public class SalesService {
+    public void insertMoney(VendingMachine vendingMachine, int amount) {
+        vendingMachine.insertMoney(amount);
+    }
+
+    public void purchaseProduct(VendingMachine vendingMachine, String productName) {
+        vendingMachine.sellProducts(productName, 1);
+    }
+
+    public RemainingMoneyDto requestRemainingMoneyDto(VendingMachine vendingMachine) {
+        return new RemainingMoneyDto(vendingMachine.getRemainingMoney());
+    }
+
     public ChangeDto requestChangeDto(VendingMachine vendingMachine) {
         Map<Coin, Integer> change = new HashMap<>();
         List<Coin> coins = Coin.getCoinsSortedByAmountInDescendingOrder();

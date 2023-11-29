@@ -1,7 +1,7 @@
 package vendingmachine.view.input.dto;
 
 import java.util.List;
-import vendingmachine.ErrorMessage;
+import vendingmachine.error.ErrorMessage;
 import vendingmachine.util.Parser;
 import vendingmachine.util.Validator;
 

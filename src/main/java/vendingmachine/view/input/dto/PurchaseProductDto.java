@@ -1,6 +1,6 @@
 package vendingmachine.view.input.dto;
 
-import vendingmachine.ErrorMessage;
+import vendingmachine.error.ErrorMessage;
 import vendingmachine.util.Validator;
 
 public class PurchaseProductDto {

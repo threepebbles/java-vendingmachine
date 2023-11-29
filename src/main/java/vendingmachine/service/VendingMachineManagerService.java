@@ -4,11 +4,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import vendingmachine.Coin;
-import vendingmachine.ErrorMessage;
 import vendingmachine.domain.CoinGenerator;
 import vendingmachine.domain.InitialCoins;
 import vendingmachine.domain.Products;
 import vendingmachine.domain.VendingMachine;
+import vendingmachine.error.ErrorMessage;
 import vendingmachine.view.output.dto.InitialCoinsDto;
 
 public class VendingMachineManagerService {

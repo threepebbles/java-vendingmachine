@@ -5,8 +5,7 @@ import vendingmachine.domain.CoinRandomGenerator;
 import vendingmachine.domain.InitialCoins;
 import vendingmachine.domain.Products;
 import vendingmachine.domain.VendingMachine;
-import vendingmachine.service.ChangeService;
-import vendingmachine.service.SellingProductService;
+import vendingmachine.service.SalesService;
 import vendingmachine.service.VendingMachineManagerService;
 import vendingmachine.view.input.InputView;
 import vendingmachine.view.input.dto.InitialAmountDto;
@@ -22,8 +21,7 @@ public class MainController {
     private final InputView inputView;
     private final OutputView outputView;
     private final VendingMachineManagerService vendingMachineManagerService = new VendingMachineManagerService();
-    private final SellingProductService sellingProductService = new SellingProductService();
-    private final ChangeService changeService = new ChangeService();
+    private final SalesService salesService = new SalesService();
 
     public MainController(InputView inputView, OutputView outputView) {
         this.inputView = inputView;
@@ -33,6 +31,7 @@ public class MainController {
     public void run() {
         VendingMachine vendingMachine = createVendingMachine();
 
+        insertMoney(vendingMachine);
         startSelling(vendingMachine);
 
         returnChange(vendingMachine);
@@ -40,23 +39,29 @@ public class MainController {
 
     private VendingMachine createVendingMachine() {
         return (VendingMachine) retryUntilSuccessWithReturn(() -> {
-            InitialCoins initialCoins = requestInitialCoins();
+            int initialAmount = requestInitialAmount();
+            InitialCoins initialCoins = createInitialCoins(initialAmount);
             Products products = requestProducts();
             return vendingMachineManagerService.createVendingMachine(initialCoins, products);
         });
     }
 
-    private InitialCoins requestInitialCoins() {
-        return (InitialCoins) retryUntilSuccessWithReturn(() -> {
+    private Integer requestInitialAmount() {
+        return (Integer) retryUntilSuccessWithReturn(() -> {
             InitialAmountDto initialAmountDto = inputView.requestInitialAmountDto();
-            int initialAmount = initialAmountDto.getAmount();
-            InitialCoinsDto initialCoinsDto = vendingMachineManagerService.createInitialCoins(new CoinRandomGenerator(),
-                    initialAmount);
+            return initialAmountDto.getAmount();
+        });
+    }
+
+    private InitialCoins createInitialCoins(int initialAmount) {
+        return (InitialCoins) retryUntilSuccessWithReturn(() -> {
+            InitialCoinsDto initialCoinsDto
+                    = vendingMachineManagerService.createInitialCoins(new CoinRandomGenerator(), initialAmount);
             outputView.printInitialCoinsScreen(initialCoinsDto);
             return new InitialCoins(initialCoinsDto.getCoinCount());
         });
     }
-    
+
     private Products requestProducts() {
         return (Products) retryUntilSuccessWithReturn(() -> {
             ProductsDto productsDto = inputView.requestProductsDto();
@@ -65,12 +70,12 @@ public class MainController {
     }
 
     private void startSelling(VendingMachine vendingMachine) {
-        insertMoney(vendingMachine);
         retryUntilSuccess(() -> {
             while (vendingMachine.hasEnoughRemainingMoney()) {
-                outputView.printRemainingMoney(requestRemainingMoneyDto(vendingMachine));
+                RemainingMoneyDto remainingMoneyDto = salesService.requestRemainingMoneyDto(vendingMachine);
+                outputView.printRemainingMoney(remainingMoneyDto);
                 String productName = requestProductName();
-                sellingProductService.purchaseProduct(vendingMachine, productName);
+                salesService.purchaseProduct(vendingMachine, productName);
             }
         });
     }
@@ -78,7 +83,7 @@ public class MainController {
     private void insertMoney(VendingMachine vendingMachine) {
         retryUntilSuccess(() -> {
             int purchaseAmount = requestPurchaseAmount();
-            sellingProductService.insertMoney(vendingMachine, purchaseAmount);
+            salesService.insertMoney(vendingMachine, purchaseAmount);
         });
     }
 
@@ -97,13 +102,10 @@ public class MainController {
     }
 
     private void returnChange(VendingMachine vendingMachine) {
-        ChangeDto changeDto = changeService.requestChangeDto(vendingMachine);
-        outputView.printRemainingMoney(requestRemainingMoneyDto(vendingMachine));
+        ChangeDto changeDto = salesService.requestChangeDto(vendingMachine);
+        RemainingMoneyDto remainingMoneyDto = salesService.requestRemainingMoneyDto(vendingMachine);
+        outputView.printRemainingMoney(remainingMoneyDto);
         outputView.printChangeScreen(changeDto);
-    }
-
-    public RemainingMoneyDto requestRemainingMoneyDto(VendingMachine vendingMachine) {
-        return new RemainingMoneyDto(vendingMachine.getRemainingMoney());
     }
 
     private <T> Object retryUntilSuccessWithReturn(Supplier<T> function) {

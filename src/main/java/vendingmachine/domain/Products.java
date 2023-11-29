@@ -2,7 +2,7 @@ package vendingmachine.domain;
 
 import java.util.Comparator;
 import java.util.List;
-import vendingmachine.ErrorMessage;
+import vendingmachine.error.ErrorMessage;
 import vendingmachine.view.input.dto.ProductsDto;
 
 public class Products {
@@ -24,7 +24,7 @@ public class Products {
                 return product;
             }
         }
-        return null;
+        throw new IllegalArgumentException(ErrorMessage.getMessage("존재하지 않는 상품명입니다."));
     }
 
     public int getLowestPrice() {
@@ -36,9 +36,5 @@ public class Products {
                 .toList()
                 .get(0)
                 .getPrice();
-    }
-
-    public List<Product> getProducts() {
-        return products;
     }
 }

@@ -1,6 +1,6 @@
 package vendingmachine.domain;
 
-import vendingmachine.ErrorMessage;
+import vendingmachine.error.ErrorMessage;
 import vendingmachine.util.Validator;
 import vendingmachine.view.input.dto.ProductDto;
 
