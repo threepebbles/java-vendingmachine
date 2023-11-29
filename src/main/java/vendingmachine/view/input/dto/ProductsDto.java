@@ -3,17 +3,17 @@ package vendingmachine.view.input.dto;
 import java.util.List;
 import vendingmachine.util.Parser;
 
-public class ProductsDto {
-    private final List<ProductDto> products;
+public class NewProductsDto {
+    private final List<NewProductDto> products;
 
-    public ProductsDto(List<ProductDto> products) {
+    public NewProductsDto(List<NewProductDto> products) {
         this.products = products;
     }
 
-    public static ProductsDto createProductsDto(String userInput) {
+    public static NewProductsDto createNewProductsDto(String userInput) {
         List<String> parsed = Parser.parseWithDelimiter(userInput, ";");
-        return new ProductsDto(parsed.stream()
-                .map(ProductDto::createProductDto)
+        return new NewProductsDto(parsed.stream()
+                .map(NewProductDto::createNewProductDto)
                 .toList());
     }
 
@@ -21,7 +21,7 @@ public class ProductsDto {
         return s.substring(fromIndex, toIndex);
     }
 
-    public List<ProductDto> getProducts() {
+    public List<NewProductDto> getProducts() {
         return products;
     }
 }
